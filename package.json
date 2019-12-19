@@ -1,0 +1,21 @@
+{
+  "name": "nodeechoclient",
+  "version": "1.0.0",
+  "description": "Node LCient for echo.server\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[-",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.0",
+    "axios": "^0.19.0",
+    "express": "^4.17.1",
+    "laravel-echo": "^1.5.3",
+    "socket.io-client": "^2.2.0",
+    "typescript": "^3.5.2",
+    "zone.js": "^0.8.29"
+  }
+}
