@@ -44,11 +44,13 @@ var nome_impianto = "";
 //const app: express.Application = express();
 var io = require('socket.io-client');
 var echo;
-login();
-//getPlantData();
-//startServer();
+//login();
+getPlantData();
+startServer();
+var host_paolo = "http:/35.180.83.154";
+var host_federico = "http:/3.16.169.253";
 function login() {
-    axios.post('http://3.16.169.253/itproxy/public/login', {
+    axios.post(host_paolo + '/itproxy/public/login', {
         username: 'italprogetti',
         password: '1',
         plant_code: 'WOLLS19;'
@@ -56,8 +58,8 @@ function login() {
         .then(function (res) {
         if (res.status == 200) {
             token = res.data.success.token;
-            console.log("LOGIN DONE");
             getPlantData();
+            // startServer();
         }
     })["catch"](function (error) {
         console.log("UNAUTHORIZED");
@@ -66,15 +68,13 @@ function login() {
 }
 function getPlantData() {
     console.log("RETRIVNIG PLANT DATA...");
-    var url = 'http://3.16.169.253/itproxy/public/api/impianto/' + codice_impianto;
+    var url = host_paolo + '/itproxy/public/api/impianto/' + codice_impianto;
     axios.get(url, { headers: {
             "Authorization": "Bearer " + token
         }
     }).then(function (res) {
         if (res.status == 200) {
-            console.log(res);
             nome_impianto = res.data.nome;
-            console.log("PLANT DATA RETRIVED " + nome_impianto);
             sendData();
         }
     });
@@ -82,7 +82,7 @@ function getPlantData() {
 function startServer() {
     echo = new laravel_echo_1["default"]({
         broadcaster: 'socket.io',
-        host: 'http://3.16.169.253:6001',
+        host: host_paolo + ':6001',
         client: io,
         auth: { headers: { Authorization: "Bearer " + token } }
     });
@@ -92,7 +92,6 @@ function sendData() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    startServer();
                     console.log("SENDING DATA");
                     return [4 /*yield*/, sleep(2000)];
                 case 1:
@@ -105,7 +104,7 @@ function sendData() {
                             var url = 'http://localhost/getodp/' + id_odp;
                             console.log(url);
                             axios.get(url).then(function (response) {
-                                axios.post('http://3.16.169.253:6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
+                                axios.post(host_paolo + ':6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
                                     "channel": nome_impianto,
                                     "name": "actionresponse",
                                     "data": { "eventData": JSON.stringify(response.data), "id": id, "action": "getodp" },
@@ -122,7 +121,7 @@ function sendData() {
                             var url = 'http://localhost/getodplist/' + stato + "/100000";
                             console.log(url);
                             axios.get(url).then(function (response) {
-                                axios.post('http://3.16.169.253:6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
+                                axios.post(host_paolo + ':6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
                                     "channel": nome_impianto,
                                     "name": "actionresponse",
                                     "data": { "eventData": JSON.stringify(response.data), "id": id, "action": "getodplist" },
@@ -137,7 +136,7 @@ function sendData() {
                             var url = 'http://localhost/getconsumi/' + id_odp;
                             console.log(url);
                             axios.get(url).then(function (response) {
-                                axios.post('http://3.16.169.253:6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
+                                axios.post(host_paolo + ':6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
                                     "channel": nome_impianto,
                                     "name": "actionresponse",
                                     "data": { "eventData": JSON.stringify(response.data), "id": id, "action": "getconsumi" },
@@ -151,7 +150,6 @@ function sendData() {
                     return [4 /*yield*/, sleep(3000)];
                 case 2:
                     _a.sent();
-                    console.log("http://localhost/api/auth/getdata");
                     _a.label = 3;
                 case 3:
                     if (!true) return [3 /*break*/, 5];
@@ -159,7 +157,7 @@ function sendData() {
                 case 4:
                     _a.sent();
                     axios.get('http://localhost/api/auth/getdata').then(function (response) {
-                        axios.post('http://3.16.169.253:6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
+                        axios.post(host_paolo + ':6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
                             "channel": nome_impianto,
                             "name": "drumdata",
                             "data": { "eventData": JSON.stringify(response.data) },

@@ -14,11 +14,11 @@ let echo: Echo;
 //login();
 getPlantData();
 startServer();
-
-
+var host_paolo = "http:/35.180.83.154"
+var host_federico = "http:/3.16.169.253"
 
 function login() {
-  axios.post(' http://3.16.169.253/itproxy/public/login', {
+  axios.post( host_paolo+'/itproxy/public/login', {
     username: 'italprogetti',
     password: '1',
     plant_code: 'WOLLS19;'
@@ -39,7 +39,7 @@ function login() {
 }
 function getPlantData(){
   console.log("RETRIVNIG PLANT DATA...")
-  let url = 'http://3.16.169.253/itproxy/public/api/impianto/'+codice_impianto;
+  let url = host_paolo+'/itproxy/public/api/impianto/'+codice_impianto;
   axios.get( 
     url,
     {headers: {
@@ -58,7 +58,7 @@ function getPlantData(){
 function startServer() {
   echo = new Echo({
     broadcaster: 'socket.io',
-    host: 'http://3.16.169.253:6001',
+    host: host_paolo+':6001',
     client: io,
     auth: { headers: { Authorization: "Bearer " + token } }
   });
@@ -78,7 +78,7 @@ async function sendData() {
      let url ='http://localhost/getodp/'+id_odp;
      console.log(url)
     axios.get(url).then((response:any) => {
-      axios.post('http://3.16.169.253:6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
+      axios.post(host_paolo+':6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
         "channel":nome_impianto,
         "name": "actionresponse",
         "data":{"eventData":JSON.stringify(response.data),"id":id,"action":"getodp"}  ,
@@ -97,7 +97,7 @@ if (action=="getodplist"){
   let url ='http://localhost/getodplist/'+stato+"/100000";
   console.log(url)
  axios.get(url).then((response:any) => {
-   axios.post('http://3.16.169.253:6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
+   axios.post(host_paolo+':6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
      "channel":nome_impianto,
      "name": "actionresponse",
      "data":{"eventData":JSON.stringify(response.data),"id":id,"action":"getodplist"}  ,
@@ -116,7 +116,7 @@ if (action=="getconsumi"){
   let url ='http://localhost/getconsumi/'+id_odp;
   console.log(url)
  axios.get(url).then((response:any) => {
-   axios.post('http://3.16.169.253:6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
+   axios.post(host_paolo+':6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
      "channel":nome_impianto,
      "name": "actionresponse",
      "data":{"eventData":JSON.stringify(response.data),"id":id,"action":"getconsumi"}  ,
@@ -136,7 +136,7 @@ if (action=="getconsumi"){
   while(true) {
     await sleep(2000)
     axios.get('http://localhost/api/auth/getdata').then((response:any) => {
-      axios.post('http://3.16.169.253:6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
+      axios.post(host_paolo+':6001/apps/06be5ce7b43ad4f7/events?auth_key=a0764f6b0a5f586a0e7fcf72ffe3e01f', {
         "channel":nome_impianto,
         "name": "drumdata",
         "data":{"eventData":JSON.stringify(response.data)}  ,
